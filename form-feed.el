@@ -50,42 +50,10 @@
   :group 'faces)
 
 (defface form-feed-line
-  '((((type graphic)
-      (background light)) :strike-through "black")
-    (((type graphic)
-      (background dark)) :strike-through "white")
-    (((type tty)) :inherit font-lock-comment-face :underline t))
+  '((((type graphic)) :strike-through t :extend t)
+    (((type tty)) :inherit font-lock-comment-face :underline t :extend t))
   "Face for form-feed-mode lines."
   :group 'form-feed)
-
-(defcustom form-feed-line-width t
-  "Width of the form feed line.
-It may be one of the following values:
-
-t: Full width.
-
-floating point number: Ratio of full width.  A value of 0.5 would
-use half the width.
-
-positive integer number: Width as measured in columns.  A value
-of 80 would use a 80 characters wide line.
-
-negative integer number: Full width minus specified number of
-columns.  A value of -1 would leave the last column empty."
-  :type '(choice (const :tag "Full width" t)
-                 (float :tag "Ratio")
-                 (integer :tag "Columns"))
-  :group 'form-feed)
-
-(defvar form-feed--line-width
-  (cond
-   ((integerp form-feed-line-width)
-    (if (>= form-feed-line-width 0)
-        form-feed-line-width
-      `(- text ,(abs form-feed-line-width))))
-   ((floatp form-feed-line-width)
-    `(,form-feed-line-width . text))
-   (t 'text)))
 
 (defcustom form-feed-extra-properties nil
   "List of additional text properties to add to form feeds."
@@ -93,15 +61,13 @@ columns.  A value of -1 would leave the last column empty."
   :group 'form-feed)
 
 (defvar form-feed--font-lock-face
-  ;; NOTE see (info "(elisp) Search-based fontification") and the
-  ;; `(MATCHER . FACESPEC)' section
-  `(face form-feed-line display (space :width ,form-feed--line-width)
-         ,@form-feed-extra-properties))
+  `(face form-feed-line ,@form-feed-extra-properties)
+  "Facespec used by form-feed.")
 
-(defvar form-feed--font-lock-keywords
-  ;; NOTE see (info "(elisp) Search-based fontification") and the
-  ;; `(MATCHER . SUBEXP-HIGHLIGHTER)' section
-  `((,page-delimiter 0 form-feed--font-lock-face t)))
+(defvar form-feed--font-lock-keywords nil
+  "Font-lock keywords added by form-feed. This variable is
+set buffer-locally when the mode is enabled so they can be
+disabled correctly.")
 
 (defcustom form-feed-lighter " ^L"
   "Lighter for `form-feed-mode'."
@@ -117,14 +83,27 @@ columns.  A value of -1 would leave the last column empty."
 Make sure the special properties involved get cleaned up on
 removal of the keywords via
 `form-feed-remove-font-lock-keywords'."
-  (font-lock-add-keywords nil form-feed--font-lock-keywords)
+  (make-local-variable 'form-feed--font-lock-keywords)
   (make-local-variable 'font-lock-extra-managed-props)
+  (setq form-feed--font-lock-keywords
+        `((,(concat page-delimiter ".*\n?") 0 form-feed--font-lock-face t)))
   (dolist (prop `(display ,@form-feed-extra-properties))
-    (cl-pushnew prop font-lock-extra-managed-props)))
+    (cl-pushnew prop font-lock-extra-managed-props))
+  (font-lock-add-keywords nil form-feed--font-lock-keywords))
 
 (defun form-feed--remove-font-lock-keywords ()
   "Remove buffer-local keywords displaying page delimiter lines."
   (font-lock-remove-keywords nil form-feed--font-lock-keywords))
+
+(defun form-feed--on ()
+  (unless buffer-display-table
+    (setq buffer-display-table (make-display-table)))
+  (form-feed--add-font-lock-keywords)
+  (aset buffer-display-table ?\^L [\s \s]))
+
+(defun form-feed--off ()
+  (form-feed--remove-font-lock-keywords)
+  (aset buffer-display-table ?\^L nil))
 
 ;;;###autoload
 (define-minor-mode form-feed-mode
@@ -135,13 +114,11 @@ glyphs on a single line as horizontal lines spanning the entire
 window."
   :lighter form-feed-lighter
   (if form-feed-mode
-      (form-feed--add-font-lock-keywords)
-    (form-feed--remove-font-lock-keywords))
+      (form-feed--on)
+    (form-feed--off))
 
   (when (called-interactively-p 'interactive)
-    (if (fboundp 'font-lock-flush)
-        (font-lock-flush)
-      (font-lock-fontify-buffer))))
+    (font-lock-flush)))
 
 (provide 'form-feed)
 ;;; form-feed.el ends here
