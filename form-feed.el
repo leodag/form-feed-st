@@ -39,6 +39,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 
 ;;; variables
 
@@ -116,16 +118,13 @@ Make sure the special properties involved get cleaned up on
 removal of the keywords via
 `form-feed-remove-font-lock-keywords'."
   (font-lock-add-keywords nil form-feed--font-lock-keywords)
-  (set (make-local-variable 'font-lock-extra-managed-props)
-       (append `(display ,@form-feed-extra-properties)
-               font-lock-extra-managed-props)))
+  (make-local-variable 'font-lock-extra-managed-props)
+  (dolist (prop `(display ,@form-feed-extra-properties))
+    (cl-pushnew prop font-lock-extra-managed-props)))
 
 (defun form-feed--remove-font-lock-keywords ()
   "Remove buffer-local keywords displaying page delimiter lines."
-  (font-lock-remove-keywords nil form-feed--font-lock-keywords)
-  (dolist (property (append '(display) form-feed-extra-properties))
-    (setq font-lock-extra-managed-props
-          (delq property font-lock-extra-managed-props))))
+  (font-lock-remove-keywords nil form-feed--font-lock-keywords))
 
 ;;;###autoload
 (define-minor-mode form-feed-mode
