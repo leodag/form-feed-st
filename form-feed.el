@@ -58,14 +58,9 @@
   :type '(plist)
   :group 'form-feed)
 
-(defvar form-feed--font-lock-face
-  `(face form-feed-line ,@form-feed-extra-properties)
-  "Facespec used by form-feed.")
-
 (defvar-local form-feed--font-lock-keywords nil
-  "Font-lock keywords added by form-feed. This variable is
-set buffer-locally when the mode is enabled so they can be
-disabled correctly.")
+  "Font-lock keywords added by form-feed to be removed when
+the mode is disabled.")
 
 (defcustom form-feed-lighter " ^L"
   "Lighter for `form-feed-mode'."
@@ -83,7 +78,8 @@ removal of the keywords via
 `form-feed-remove-font-lock-keywords'."
   (make-local-variable 'font-lock-extra-managed-props)
   (setq form-feed--font-lock-keywords
-        `((,(concat page-delimiter ".*\n?") 0 form-feed--font-lock-face t)))
+        `((,(concat page-delimiter ".*\n?") 0 '(face form-feed-line ,@form-feed-extra-properties) t)
+          (,page-delimiter 0 '(face nil display (space :width 2)))))
   (dolist (prop `(display ,@form-feed-extra-properties))
     (cl-pushnew prop font-lock-extra-managed-props))
   (font-lock-add-keywords nil form-feed--font-lock-keywords t))
@@ -93,15 +89,11 @@ removal of the keywords via
   (font-lock-remove-keywords nil form-feed--font-lock-keywords))
 
 (defun form-feed--on ()
-  (unless buffer-display-table
-    (setq buffer-display-table (make-display-table)))
   (form-feed--add-font-lock-keywords)
-  (aset buffer-display-table ?\^L [\s \s])
   (font-lock-flush))
 
 (defun form-feed--off ()
   (form-feed--remove-font-lock-keywords)
-  (aset buffer-display-table ?\^L nil)
   (font-lock-flush))
 
 
