@@ -64,7 +64,7 @@
   `(face form-feed-line ,@form-feed-extra-properties)
   "Facespec used by form-feed.")
 
-(defvar form-feed--font-lock-keywords nil
+(defvar-local form-feed--font-lock-keywords nil
   "Font-lock keywords added by form-feed. This variable is
 set buffer-locally when the mode is enabled so they can be
 disabled correctly.")
@@ -83,7 +83,6 @@ disabled correctly.")
 Make sure the special properties involved get cleaned up on
 removal of the keywords via
 `form-feed-remove-font-lock-keywords'."
-  (make-local-variable 'form-feed--font-lock-keywords)
   (make-local-variable 'font-lock-extra-managed-props)
   (setq form-feed--font-lock-keywords
         `((,(concat page-delimiter ".*\n?") 0 form-feed--font-lock-face t)))
