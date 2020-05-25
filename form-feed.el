@@ -86,7 +86,7 @@ removal of the keywords via
         `((,(concat page-delimiter ".*\n?") 0 form-feed--font-lock-face t)))
   (dolist (prop `(display ,@form-feed-extra-properties))
     (cl-pushnew prop font-lock-extra-managed-props))
-  (font-lock-add-keywords nil form-feed--font-lock-keywords))
+  (font-lock-add-keywords nil form-feed--font-lock-keywords t))
 
 (defun form-feed--remove-font-lock-keywords ()
   "Remove buffer-local keywords displaying page delimiter lines."
