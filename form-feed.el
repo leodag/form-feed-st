@@ -1,4 +1,4 @@
-;;; form-feed.el --- Display ^L glyphs as horizontal lines
+;;; form-feed.el --- Display ^L glyphs as horizontal lines -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2014-2016 Vasilij Schneidermann <v.schneidermann@gmail.com>
 
