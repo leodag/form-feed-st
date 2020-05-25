@@ -99,11 +99,13 @@ removal of the keywords via
   (unless buffer-display-table
     (setq buffer-display-table (make-display-table)))
   (form-feed--add-font-lock-keywords)
-  (aset buffer-display-table ?\^L [\s \s]))
+  (aset buffer-display-table ?\^L [\s \s])
+  (font-lock-flush))
 
 (defun form-feed--off ()
   (form-feed--remove-font-lock-keywords)
-  (aset buffer-display-table ?\^L nil))
+  (aset buffer-display-table ?\^L nil)
+  (font-lock-flush))
 
 ;;;###autoload
 (define-minor-mode form-feed-mode
@@ -115,10 +117,8 @@ window."
   :lighter form-feed-lighter
   (if form-feed-mode
       (form-feed--on)
-    (form-feed--off))
+    (form-feed--off)))
 
-  (when (called-interactively-p 'interactive)
-    (font-lock-flush)))
 
 (provide 'form-feed)
 ;;; form-feed.el ends here
