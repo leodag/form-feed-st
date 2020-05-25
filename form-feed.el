@@ -106,6 +106,9 @@ removal of the keywords via
   (aset buffer-display-table ?\^L nil)
   (font-lock-flush))
 
+
+;;; Minor mode
+
 ;;;###autoload
 (define-minor-mode form-feed-mode
   "Toggle form-feed-mode.
@@ -114,10 +117,45 @@ This minor mode displays page delimiters which usually appear as ^L
 glyphs on a single line as horizontal lines spanning the entire
 window."
   :lighter form-feed-lighter
+  :group 'form-feed
+  :require 'form-feed
   (if form-feed-mode
       (form-feed--on)
     (form-feed--off)))
 
+
+;;; Global mode
+
+(defcustom form-feed-global-modes t
+  "Modes for which `form-feed-mode' mode is turned on by `global-form-feed-mode'.
+If nil, means no modes.  If t, then all major modes have it turned on.
+If a list, it should be a list of `major-mode' symbol names for which
+`form-feed-mode' should be automatically turned on.  The sense of the list is
+negated if it begins with `not'.  For example:
+ (c-mode c++-mode)
+means that `form-feed-mode' is turned on for buffers in C and C++ modes only.
+ (not message-mode)
+means that `form-feed-mode' is always turned on except in `message-mode' buffers."
+  :type '(choice (const :tag "none" nil)
+                 (const :tag "all" t)
+                 (set :menu-tag "mode-specific" :tag "modes"
+                      :value (not)
+                      (const :tag "Except" not)
+                      (repeat :inline t (symbol :tag "mode")))))
+
+(defun form-feed-mode-maybe ()
+  (when (and (not (or noninteractive (eq (aref (buffer-name) 0) ?\s)))
+             (cond ((eq form-feed-global-modes t)
+                    t)
+                   ((eq (car-safe form-feed-global-modes) 'not)
+                    (not (memq major-mode (cdr form-feed-global-modes))))
+                   (t (memq major-mode form-feed-global-modes))))
+  (form-feed-mode 1)))
+
+;;;###autoload
+(define-global-minor-mode global-form-feed-mode
+  form-feed-mode form-feed-mode-maybe)
 
 (provide 'form-feed)
+
 ;;; form-feed.el ends here
