@@ -134,13 +134,13 @@ means that `form-feed-mode' is always turned on except in `message-mode' buffers
                       (repeat :inline t (symbol :tag "mode")))))
 
 (defun form-feed-mode-maybe ()
-  (when (and (not (or noninteractive (eq (aref (buffer-name) 0) ?\s)))
+  (when (and (not (eq (aref (buffer-name) 0) ?\s))
              (cond ((eq form-feed-global-modes t)
                     t)
                    ((eq (car-safe form-feed-global-modes) 'not)
                     (not (memq major-mode (cdr form-feed-global-modes))))
                    (t (memq major-mode form-feed-global-modes))))
-  (form-feed-mode 1)))
+    (form-feed-mode 1)))
 
 ;;;###autoload
 (define-global-minor-mode global-form-feed-mode
