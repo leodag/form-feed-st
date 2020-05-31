@@ -65,8 +65,7 @@ the mode is disabled.")
 (defcustom form-feed-lighter " ^L"
   "Lighter for `form-feed-mode'."
   :type 'string
-  :group 'form-feed
-  :risky t)
+  :group 'form-feed)
 
 
 ;;; Functions
@@ -126,6 +125,7 @@ negated if it begins with `not'.  For example:
 means that `form-feed-mode' is turned on for buffers in C and C++ modes only.
  (not message-mode)
 means that `form-feed-mode' is always turned on except in `message-mode' buffers."
+  :group 'form-feed
   :type '(choice (const :tag "none" nil)
                  (const :tag "all" t)
                  (set :menu-tag "mode-specific" :tag "modes"
