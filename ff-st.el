@@ -37,7 +37,7 @@
 ;; In comparison to it, this fork does not have configurable line
 ;; width; however it always displays correctly, even if you have
 ;; multiple windows showing the same buffer, and will never cause side
-;; scrolling since the form feed only occupies two spaces. It will
+;; scrolling since the form feed only occupies two spaces.  It will
 ;; also only affect form feeds in the beginning of the line, which to
 ;; me is a feature since it does not hide any undesired characters
 ;; after the form feed, making them easy to notice and remove.
