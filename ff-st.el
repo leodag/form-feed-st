@@ -1,11 +1,11 @@
 ;;; ff-st.el --- Display ^L glyphs as horizontal lines -*- lexical-binding: t -*-
 
 ;; Author: Leonardo Schripsema
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; URL: https://github.com/leodag/ff-st
 ;; Keywords: faces
 
-;; Copyright (C) 2020 Leonardo Schripsema
+;; Copyright (C) 2020-2021 Leonardo Schripsema
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
