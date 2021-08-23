@@ -122,35 +122,29 @@ window."
 
 ;;; Global mode
 
-(defcustom ff-st-global-modes t
-  "Modes for which `ff-st-mode' mode is turned on by
-`global-ff-st-mode'.  If nil, means no modes.  If t, then all major
-modes have it turned on.  If a list, it should be a list of
-`major-mode' symbol names for which `ff-st-mode' should be
-automatically turned on.  The sense of the list is negated if it
-begins with `not'.  For example:
- (c-mode c++-mode)
-Means that `ff-st-mode' is turned on for buffers in C and C++ modes
-only.
- (not message-mode)
-means that `ff-st-mode' is always turned on except in `message-mode'
-buffers."
-  :group 'ff-st
-  :type '(choice (const :tag "none" nil)
-                 (const :tag "all" t)
-                 (set :menu-tag "mode-specific" :tag "modes"
-                      :value (not)
-                      (const :tag "Except" not)
-                      (repeat :inline t (symbol :tag "mode")))))
+(defcustom ff-st-include-modes '(prog-mode text-mode)
+  "Major modes in which `ff-st-mode' is activated.
+This is used by `global-ff-st-mode' which activates `ff-st-mode'
+in all buffers whose major mode derives from one of the modes
+listed here, but not from one of the modes listed in
+`ff-st-exclude-modes'."
+  :type '(repeat function)
+  :group 'ff-st)
+
+(defcustom ff-st-exclude-modes nil
+  "Major modes in which `ff-st-mode' is not activated.
+This is used by `global-ff-st-mode' which activates `ff-st-mode'
+in all buffers whose major mode derives from one of the modes
+listed in `ff-st-include-modes', but not from one of the modes
+listed here."
+  :type '(repeat function)
+  :group 'ff-st)
 
 (defun ff-st-mode-maybe ()
-  (when (and (not (eq (aref (buffer-name) 0) ?\s))
-             (cond ((eq ff-st-global-modes t)
-                    t)
-                   ((eq (car-safe ff-st-global-modes) 'not)
-                    (not (memq major-mode (cdr ff-st-global-modes))))
-                   (t (memq major-mode ff-st-global-modes))))
-    (ff-st-mode 1)))
+  (when (and (apply 'derived-mode-p ff-st-include-modes)
+             (not (apply 'derived-mode-p ff-st-exclude-modes))
+             (not (bound-and-true-p enriched-mode)))
+    (ff-st-mode)))
 
 ;;;###autoload
 (define-global-minor-mode global-ff-st-mode
