@@ -2,6 +2,7 @@
 
 ;; Author: Leonardo Schripsema
 ;; Version: 0.2.0
+;; Package-Requires: ((emacs "25.1"))
 ;; URL: https://github.com/leodag/ff-st
 ;; Keywords: faces
 
@@ -78,10 +79,9 @@ the mode is disabled.")
 ;;; Functions
 
 (defun ff-st--add-font-lock-keywords ()
-  "Add buffer-local keywords to display page delimiter lines.  Make
-sure the special properties involved get cleaned up on removal of the
-keywords via
-`ff-st-remove-font-lock-keywords'."
+  "Add buffer-local keywords to display page delimiter lines.
+Make sure the special properties involved get cleaned up on
+removal of the keywords via `ff-st-remove-font-lock-keywords'."
   (make-local-variable 'font-lock-extra-managed-props)
   (setq ff-st--font-lock-keywords
         `((,(concat page-delimiter ".*\n?") 0 '(face ff-st-line ,@ff-st-extra-properties) t)
@@ -95,10 +95,12 @@ keywords via
   (font-lock-remove-keywords nil ff-st--font-lock-keywords))
 
 (defun ff-st--on ()
+  "Turn on the mode and manage font-lock keywords."
   (ff-st--add-font-lock-keywords)
   (font-lock-flush))
 
 (defun ff-st--off ()
+  "Turn off the mode and manage font-lock keywords."
   (ff-st--remove-font-lock-keywords)
   (font-lock-flush))
 
@@ -141,6 +143,7 @@ listed here."
   :group 'ff-st)
 
 (defun ff-st-mode-maybe ()
+  "Turn on function for the mode."
   (when (and (apply 'derived-mode-p ff-st-include-modes)
              (not (apply 'derived-mode-p ff-st-exclude-modes))
              (not (bound-and-true-p enriched-mode)))
