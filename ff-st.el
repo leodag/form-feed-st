@@ -144,8 +144,8 @@ listed here."
 
 (defun ff-st-mode-maybe ()
   "Turn on function for the mode."
-  (when (and (apply 'derived-mode-p ff-st-include-modes)
-             (not (apply 'derived-mode-p ff-st-exclude-modes))
+  (when (and (apply #'derived-mode-p ff-st-include-modes)
+             (not (apply #'derived-mode-p ff-st-exclude-modes))
              (not (bound-and-true-p enriched-mode)))
     (ff-st-mode)))
 
