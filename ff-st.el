@@ -67,8 +67,7 @@
   :group 'ff-st)
 
 (defvar-local ff-st--font-lock-keywords nil
-  "Font-lock keywords added by ff-st to be removed when
-the mode is disabled.")
+  "Font-lock keywords to be removed when the mode is disabled.")
 
 (defcustom ff-st-lighter " ^L"
   "Lighter for `ff-st-mode'."
