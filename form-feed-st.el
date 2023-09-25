@@ -58,7 +58,7 @@
 (defface form-feed-st-line
   '((((type graphic)) :strike-through t :extend t)
     (((type tty)) :inherit font-lock-comment-face :underline t :extend t))
-  "Face for form-feed-st-mode lines."
+  "Face for `form-feed-st-mode' lines."
   :group 'form-feed-st)
 
 (defcustom form-feed-st-extra-properties nil
@@ -108,7 +108,7 @@ removal of the keywords via `form-feed-st-remove-font-lock-keywords'."
 
 ;;;###autoload
 (define-minor-mode form-feed-st-mode
-  "Toggle form-feed-st-mode.
+  "Toggle `form-feed-st-mode'.
 
 This minor mode displays page delimiters which usually appear as ^L
 glyphs on a single line as horizontal lines spanning the entire
