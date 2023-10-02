@@ -1,4 +1,4 @@
-;;; form-feed-st.el --- Display ^L glyphs as horizontal lines across the whole window -*- lexical-binding: t -*-
+;;; form-feed-st.el --- Display ^L glyphs as full-width horizontal lines -*- lexical-binding: t -*-
 
 ;; Author: Leonardo Schripsema
 ;; Version: 0.2.0
